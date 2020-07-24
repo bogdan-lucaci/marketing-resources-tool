@@ -7,6 +7,7 @@ textarea {resize: vertical;}
 .w-50percent {width: 50% !important}
 .h-40px {height: 40px !important}
 .border-bottom-s2p {border-bottom: 2px dotted #650394 !important}
+.border-top-s2p {border-top: 2px dotted #650394 !important}
 
 html {
   color: #222;
@@ -81,6 +82,9 @@ h1 {
         }
       .s2p-logo-card .badge {
         font-size: 80%;
+        font-weight: 300;
+        margin: 0 2px 4px 0;
+        overflow: hidden;
         }
 
       .s2p-logo-card .btn .svg-icon {
