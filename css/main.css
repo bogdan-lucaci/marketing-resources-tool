@@ -130,7 +130,7 @@ h1 {
 
 
       .s2p-logo-listHeader .headerName,
-      .s2p-logo-listRow .itemName {
+      .s2p-logo-listRow .itemFile {
         text-align: left;
         }
       .s2p-logo-listRow > div:last-child {
@@ -140,7 +140,7 @@ h1 {
           max-width: 100%;
           max-height: 1.5rem;
           }
-        .s2p-logo-listRow .itemName {
+        .s2p-logo-listRow .itemFile {
           overflow: hidden;
           font-weight: 400;
           }

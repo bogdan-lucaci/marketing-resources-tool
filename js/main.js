@@ -73,7 +73,11 @@ let s2p_marketing = (function () {
                                     '<div class="s2p-logo-listHeader row no-gutters_  mb-2">',
                                         '<div class="headerThumb col-4 col-md-2  d-none d-md-block"></div>',
                                         sectionFilters.map(function(item) {
-                                            return '<div class="header' + item.charAt(0).toUpperCase() + item.slice(1) + ' col-' + getCurrentItemColSize(item) + '">' + item + '</div>';
+                                            return [
+                                                '<div class="header' + item.charAt(0).toUpperCase() + item.slice(1) + ' col-' + getCurrentItemColSize(item) + '">',
+                                                    '<span onclick="UI.">' + item + '</span>',
+                                                '</div>'
+                                            ].join('');
                                         }).join(''),
                                     '</div>'
                                 ].join('');
@@ -84,7 +88,7 @@ let s2p_marketing = (function () {
                                 return [
                                     '<div class="s2p-logo-listRow row no-gutters_  py-1">',
                                         '<div class="itemThumb col-4 col-md-2">' + (imgObj.file.split('.').pop().toUpperCase() === 'EPS' ? 'N/A' : ('<img src="' + imgPath + '">')) + '</div>',
-                                        '<div class="itemName col-8 col-md-5">' + imgObj.file.substr(0, imgObj.file.length-4) + '</div>',
+                                        '<div class="itemFile col-8 col-md-5">' + imgObj.file.substr(0, imgObj.file.length-4) + '</div>',
                                         '<div class="itemWidth col-1  mr-3 mr-md-0">' + (imgObj.width === -1 ? '∞' : imgObj.width) + '</div>',
                                         '<div class="itemHeight col-1  mr-3 mr-md-0">' + (imgObj.height === -1 ? '∞' : imgObj.height) + '</div>',
                                         '<div class="itemDpi col-1  mr-3 mr-md-0">' + (imgObj.dpi === -1 ? '∞' : imgObj.dpi) + '</div>',
@@ -199,7 +203,20 @@ let s2p_marketing = (function () {
                     }
                 };
 
+                let _events = {
+                    onListHeaderClick: function () {
+                        //_action.orderByFilter 
+                    },
+                    start: function () {
+                        _events.onListHeaderClick();
+                    }
+                };
+
                 let _action = {
+                    // order content by a given filter
+                    orderByFilter: function(filter) {
+
+                    },
                     // gets section content markup for a specific tab name
                     getSectionContent: function (tabName, settings) {
                         let sectionData = _dataAccess.getSectionData(tabName);
@@ -255,7 +272,8 @@ let s2p_marketing = (function () {
                 }
 
                 return {
-                    getContent: _action.getSectionContent
+                    getContent: _action.getSectionContent,
+                    attachEvents: _events.start,
                 }
             })(),
             tabs: (function() {
@@ -275,7 +293,6 @@ let s2p_marketing = (function () {
                     section: function (options) {
                         return [
                             '<div class="tab-pane fade show ' + (options.active ? 'active' : '') + '" id="v-pills-' + options.id + '" role="tabpanel" aria-labelledby="v-pills-' + options.id + '-tab">',
-                            options.content,
                             '</div>'
                         ].join('');
                     },
@@ -302,13 +319,15 @@ let s2p_marketing = (function () {
                         });
                         $('#' + tabsId).append(currentTabTitleMarkup);
                     },
-                    addTabSection: function (tabName, tabsId, sectionSettings) {
+                    addTabSectionMarkup: function (tabName, tabsId) {
                         let currentTabSectionMarkup = _template.section({
                             id: tabName.toLowerCase().replace(/\s+/g, ''),
-                            active: $('#' + tabsId + 'Content').children().length ? false : true,
-                            content: _component.section.getContent(tabName, sectionSettings)
+                            active: $('#' + tabsId + 'Content').children().length ? false : true
                         });
                         $('#' + tabsId + 'Content').append(currentTabSectionMarkup);
+                    },
+                    addSectionContent: function (tabsId, tabName, sectionContent) {
+                        $('#' + tabsId + 'Content #v-pills-' + tabName.toLowerCase().replace(/\s+/g, '')).append(sectionContent);
                     },
                     create: function (settings) {
                         let tabsId = settings.id;
@@ -322,7 +341,9 @@ let s2p_marketing = (function () {
                             let sectionSettings = _action.getSectionSettings(tabName, settings);
         
                             // create tabs sections
-                            _action.addTabSection(tabName, tabsId, sectionSettings);
+                            _action.addTabSectionMarkup(tabName, tabsId, sectionSettings);
+                            _action.addSectionContent(tabsId, tabName, _component.section.getContent(tabName, sectionSettings));
+                            _component.section.addEvents
                         });
         
                         setTimeout(function () {
@@ -342,7 +363,8 @@ let s2p_marketing = (function () {
         return {
             action: {
                 createTabs: _component.tabs.create
-            }
+            },
+            query: {}
         }
     })();
 
@@ -361,7 +383,6 @@ let s2p_marketing = (function () {
                     }
                 ]
             });
-            
         }
     }
     return publicAPI;
