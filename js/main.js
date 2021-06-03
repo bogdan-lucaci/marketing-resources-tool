@@ -1,17 +1,20 @@
 'use strict';
 
-let s2p_marketing = (function () {
-
+const s2p_marketing = (function () {
+    
     let DATA = {
         
     }
 
-    let UI = (function () {
+    const UI = (function () {
+        
         let _component = {
             section: (function () {
                 let _consts = {
                     vectorialFormats: ['EPS', 'SVG', 'AI'],
+                    notImgFormat: ['PDF','DOCX','DOC'],
                     s2pLogosFolder: 's2p-logo/',
+                    printsFolder: 'prints/',
                     gpLogosFolder: 'methods/',
                 };
 
@@ -113,10 +116,37 @@ let s2p_marketing = (function () {
                             ].join('');
                         }
                     },
-                    SECTION_prints: {},
+                    SECTION_prints: {
+                        cardTemplate: function (imgObj) {
+                            let imgPath = 'img/' + _consts.printsFolder + imgObj.file;
+                            let imgFormat = imgObj.file.split('.').pop().toUpperCase();
+                            let card = [
+                                '<div class="s2p-logo-card print card">',
+                                    '<div class="card-img-top my-3">',
+                                        _consts.notImgFormat.indexOf(imgFormat) === -1 ? '<img  src="' + imgPath + '"/>' : '<h1>' + imgFormat + '</h1>',
+                                    '</div>',
+                                    '<div class="card-body  text-center  pt-0">',
+                                        '<h5 class="card-title">' + imgObj.name + '</h5>',
+                                        '<p class="card-text">',
+                                            '<span class="badge badge-pill badge-light d-block">' + imgObj.file + '</span>',
+                                            //'<span class="badge badge-pill badge-light">ID: ' + imgObj.id + '</span>',
+                                            '<span class="badge badge-pill badge-secondary">Format: <b>' + imgFormat + '</b></span>',
+                                        '</p>',
+                                        '<a href="' + imgPath + '" class="btn btn-info" download>',
+                                            'Download ',
+                                            '<img class="svg-icon" src="img/icons/arrow-down-circle-fill-white.svg"/>',
+                                        '</a>',
+                                    '</div>',
+                                '</div>'
+                            ].join('');
+            
+                            return card;
+                        },                        
+                    },
                     SECTION_gp: {
                         cardTemplate: function (imgObj) {
                             let imgPath = 'img/' + _consts.gpLogosFolder + imgObj.file;
+                            let imgFormat = imgObj.file.split('.').pop().toUpperCase();
                             let card = [
                                 '<div class="s2p-logo-card card  ' + (imgObj.active === '0' ? 'border-danger' : '') + '">',
                                     '<div class="card-img-top">',
@@ -128,7 +158,7 @@ let s2p_marketing = (function () {
                                             '<span class="badge badge-pill badge-light d-block">' + imgObj.file + '</span>',
                                             //'<span class="badge badge-pill badge-light">ID: ' + imgObj.id + '</span>',
                                             '<span class="badge badge-pill badge-' + (imgObj.active === '1' ? 'light' : 'danger') + '">Active: ' + (imgObj.active === '1' ? 'YES' : 'NO') + '</span>',
-                                            '<span class="badge badge-pill badge-secondary">Format: ' + imgObj.file.split('.').pop().toUpperCase() + '</span>',
+                                            '<span class="badge badge-pill badge-secondary">Format: <b>' + imgFormat + '</b></span>',
                                         '</p>',
                                         '<a href="' + imgPath + '" class="btn btn-info" download>',
                                             'Download ',
@@ -245,7 +275,20 @@ let s2p_marketing = (function () {
                             }
                         }
                         else if (sectionName === 'prints') {
+                            if (sectionData.images.length) {
+                                let layout = settings ? settings.listLayout || 'list' : 'list'; // 'list' / 'cards'
 
+                                switch (layout) {
+                                    case 'cards':
+                                        content = sectionData.images.reduce((accumulator, currentValue, currentIndex, array) => {
+                                            return accumulator + _template.SECTION_prints.cardTemplate(currentValue);
+                                        }, '');
+                                        break;
+                                    default:
+                                        content = _template.SECTION_prints.listTemplate(sectionData);
+                                        break;
+                                }
+                            }
                         } else if (sectionName === 'gplogos') {
                             if (sectionData.images.length) {
                                 let layout = 'list'; // 'list' / 'cards'
@@ -368,8 +411,9 @@ let s2p_marketing = (function () {
         }
     })();
 
-    let publicAPI = {
-        init: function () {
+    const publicAPI = {
+        init: function (settings) {
+            console.log(settings);
             UI.action.createTabs({
                 id: 's2p-tabs',
                 sections: [
@@ -377,6 +421,10 @@ let s2p_marketing = (function () {
                         section: 'Logo',
                         listLayout: 'list'
                     },
+                    {
+                        section: 'Prints',
+                        listLayout: 'cards'
+                    },                    
                     {
                         section: 'GP Logos',
                         listLayout: 'cards'
@@ -389,5 +437,7 @@ let s2p_marketing = (function () {
 })();
 
 $(document).ready(function () {
-    s2p_marketing.init();
+    s2p_marketing.init({
+        listLayout: 'list' // 'list' / 'cards'
+    });
 })

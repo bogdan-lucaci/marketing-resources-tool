@@ -286,7 +286,37 @@ let _DATA = [
     [
         'Prints',
         {
-            filters: ['width', 'height', 'dpi', 'format'],
+            filters: ['format'],
+            images: [
+                {
+                    file: 'high_level_diagram_042_FINAL.png',
+                    name: 'High Level Diagram'
+                },
+                {
+                    file: 'marketplace_setup_A4_v003.png',
+                    name: 'Marketplace Highlights'
+                },                
+                {
+                    file: 'marketplace_setup_A4_v003.pdf',
+                    name: 'Marketplace Highlights'
+                },
+                {
+                    file: 'marketplace_setup_A4_v003.docx',
+                    name: 'Marketplace Highlights'
+                },
+                {
+                    file: 'flyer_v4_update_2019-08-28.jpg',
+                    name: 'Smart2Pay Flyer'
+                },
+                {
+                    file: 'cards_v043_FINAL.png',
+                    name: 'Smart Cards System Overview'
+                },
+                {
+                    file: 'smart_cards_technology_stack_2018-09-27.png',
+                    name: 'SmartCards Technology Stac'
+                },
+            ]
         }
     ],
     [
